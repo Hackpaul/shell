@@ -1,7 +1,7 @@
 #include<stdio.h>
 #include<string.h>
 #include<stdlib.h>
-#include "getline.h"
+#include "shared.h"
 
 int parser(struct line *buffer){
 
@@ -12,5 +12,6 @@ int parser(struct line *buffer){
 		count++;
 		temp=strtok(NULL," ");
 	}
+	buffer->tokens[count]=NULL;
         return count;
 }
