@@ -1,25 +1,33 @@
-#include<stdio.h>
-#include<stdlib.h>
-#include "getline.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include "shared.h"
 
 int main(void){
         struct line line_ptr; // Declaring shared structure for buffer
         line_ptr.buffer=NULL;
-	int count,i=0;
+	int count;
+	pid_t pid;
 
+	printf("user@pc$ ");
 	get_line(&line_ptr);    // Passing the struct and get update
 
 	if(line_ptr.code==1){
-	     printf("Line : %s\n",line_ptr.buffer);
 	     count=parser(&line_ptr);
-	     if(count>0){
-		     while(i<count){
-	             printf("Token :%d string :%s\n",i+1,line_ptr.tokens[i]);
-	             i++;
+	     if(count>0){	     
+		     pid=fork();
+		     if(pid==0){            // child
+			     execute_command(&line_ptr);
+		     } else if(pid>0){      // parent
+			     parent(pid);
+		     } else{
+			     fprintf(stderr,"Error : fork cancelled");
+			     free(line_ptr.buffer);
+			     exit(EXIT_FAILURE);
 		     }
-             } else{
-         	     printf("No command is entered !, lol\n");
-	     }	
+
+	     }
         } else if(line_ptr.code==0){
              printf("User stopped it!\n");
 	} else if(line_ptr.code==-1){
