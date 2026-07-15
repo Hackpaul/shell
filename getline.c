@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "getline.h"
+#include "shared.h"
 
 void get_line(struct line *ptr){
 
