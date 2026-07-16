@@ -7,10 +7,10 @@
 int main(void){
         struct line line_ptr; // Declare a shared structure for buffer
         line_ptr.buffer = NULL;
-	int count , stop = 1;
-	pid_t process_id;
+        int count , stop = 1;
+        pid_t process_id;
 
-	while(stop){
+        while(stop){
 	    printf("user@pc$ ");
 	    get_line(&line_ptr);    // Pass the struct and get update
 
