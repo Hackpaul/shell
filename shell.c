@@ -9,7 +9,7 @@ int main(void){
         pid_t process_id;
         
         struct line shared_buffer; // Declare a shared structure for buffer
-        struct hash_table hash; 
+        struct hash_table hash = {0}; 
 
         initialize_buildins(&hash);
         shared_buffer.buffer = NULL;
