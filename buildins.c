@@ -49,22 +49,26 @@ int buildin_handler(struct line* buffer , struct hash_table *ptr){
 	    exit(SUCCESS);
         }
 
-        if(hash == ptr->hashed_values[1]){
+        if(hash == ptr->hashed_values[1]){         // cd - command
 
             if(buffer->no_of_arguments == 2){
 	        if(buffer->tokens[1][0] == '~'){
 		    char *home = getenv("HOME");
                     snprintf(path,sizeof(path),"%s%s",home,buffer->tokens[1] + 1);
-	            chdir(path);
-		    perror("cd");
+	            if(chdir(path) == -1){
+		        perror("cd");
+		    }
 		} else {
-                    chdir(buffer->tokens[1]);
-		    perror("cd");
+                    if(chdir(buffer->tokens[1]) == -1){
+		       perror("cd");
+		    }
 		}
 
 	    } else if(buffer->no_of_arguments == 1){
                 char *home = getenv("HOME");
-		chdir(home);
+		if(chdir(home) == -1){
+                    perror("cd");
+		}
 	    } else{
                 fprintf(stderr,"cd : invalid number of arguments\n");
 	    }
