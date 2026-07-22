@@ -6,7 +6,7 @@
 #define MAX_BUILDINS_COMMANDS 10
 #define MAX_TOKENS 10
 #define HASH_TABLE 10
-
+#define PATH_SIZE 4096
 struct line{             //Shared structure for string buffers
 	int code;
 	int no_of_arguments;
@@ -17,6 +17,7 @@ struct line{             //Shared structure for string buffers
 
 struct string_hash {
     char *string;
+    int slot;
     struct string_hash *next;
 };
 

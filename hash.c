@@ -26,6 +26,7 @@ int hash_buildins(struct hash_table *ptr){
                 printf("Malloc failed\n");
 	    }
 	    temp->string = ptr->buildins[count];
+	    temp->slot = count;
 	    ptr->hash_array[hash] = temp;
 	} else {
             while(temp->next != NULL){	                      // appendation of node 
@@ -34,6 +35,7 @@ int hash_buildins(struct hash_table *ptr){
             }
 	    temp->next = malloc(sizeof(struct string_hash));
 	    temp->next->string = ptr->buildins[count];
+	    temp->next->slot = count;
 	    temp->next->next = NULL;
 	}
         count ++;
