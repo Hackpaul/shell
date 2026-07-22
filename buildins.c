@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include "shared.h"
 
 void free_nodes(struct hash_table *ptr){
@@ -29,6 +30,7 @@ int buildin_handler(struct line* buffer , struct hash_table *ptr){
     int is_found = FAIL;
     unsigned long hash = hash_string(buffer->tokens[0]);
     struct string_hash *temp;
+    char path[PATH_SIZE] = {0};
     temp = ptr->hash_array[hash];
     while(temp != NULL){
         if(strcmp(temp->string,buffer->tokens[0]) == 0){
@@ -48,7 +50,24 @@ int buildin_handler(struct line* buffer , struct hash_table *ptr){
         }
 
         if(hash == ptr->hashed_values[1]){
-            printf("cd cmd!\n");
+
+            if(buffer->no_of_arguments == 2){
+	        if(buffer->tokens[1][0] == '~'){
+		    char *home = getenv("HOME");
+                    snprintf(path,sizeof(path),"%s%s",home,buffer->tokens[1] + 1);
+	            chdir(path);
+		    perror("cd");
+		} else {
+                    chdir(buffer->tokens[1]);
+		    perror("cd");
+		}
+
+	    } else if(buffer->no_of_arguments == 1){
+                char *home = getenv("HOME");
+		chdir(home);
+	    } else{
+                fprintf(stderr,"cd : invalid number of arguments\n");
+	    }
         }
 
     }
