@@ -10,11 +10,14 @@ int main(void){
         
         struct line shared_buffer; // Declare a shared structure for buffer
         struct hash_table hash = {0}; 
+	char path[PATH_SIZE] = {0};
 
         initialize_buildins(&hash);
         shared_buffer.buffer = NULL;
 
 	while(stop){
+	    getcwd(path,sizeof(path));
+	    setenv("PWD",path,1);
 	    printf("%s@pc$%s ",getenv("USER"),getenv("PWD"));
 	    get_line(&shared_buffer);    // Pass the struct and get update
 
