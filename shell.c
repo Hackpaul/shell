@@ -15,7 +15,7 @@ int main(void){
         shared_buffer.buffer = NULL;
 
 	while(stop){
-	    printf("user@pc$ ");
+	    printf("%s@pc$%s ",getenv("USER"),getenv("PWD"));
 	    get_line(&shared_buffer);    // Pass the struct and get update
 
       	    if(shared_buffer.code == 1){
