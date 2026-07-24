@@ -2,14 +2,18 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/types.h>
+
 #include "shared.h"
+#include "struct.h"
+#include "function.h"
 
 int main(void){
         int count , stop = 1;
         pid_t process_id;
         
-        struct line shared_buffer; // Declare a shared structure for buffer
-        struct hash_table hash = {0}; 
+        input shared_buffer; // Declare a shared structure for buffer
+        hash_table hash = {0}; 
+	shared_buffer.table = &hash;
 	char path[PATH_SIZE] = {0};
 
         initialize_buildins(&hash);
