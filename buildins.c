@@ -2,10 +2,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include "shared.h"
 
-void free_nodes(struct hash_table *ptr){
-    struct string_hash *back, *front;
+#include "shared.h"
+#include "struct.h"
+#include "function.h"
+
+void free_nodes(hash_table *ptr){
+    hash_node *back, *front;
     int i;
     for(i=0; i<HASH_TABLE; i++){
         front = ptr->hash_array[i];
@@ -18,62 +21,29 @@ void free_nodes(struct hash_table *ptr){
 
 }
 
-void initialize_buildins(struct hash_table *ptr){
+void initialize_buildins(hash_table *ptr){
                                  // to add a new function , add it before NULL. 
     ptr->buildins[0] = "exit";
+    ptr->do_command[0] = do_exit;
     ptr->buildins[1] = "cd";
+    ptr->do_command[1] = do_cd;
     ptr->buildins[2] = NULL;
     hash_buildins(ptr);
 }
 
-int buildin_handler(struct line* buffer , struct hash_table *ptr){
+int buildin_handler(input* buffer , hash_table *ptr){
     int is_found = FAIL;
-    unsigned long hash = hash_string(buffer->tokens[0]);
-    struct string_hash *temp;
-    char path[PATH_SIZE] = {0};
-    temp = ptr->hash_array[hash];
+
+    unit hash = hash_string(buffer->tokens[0]);
+    hash_node *temp = ptr->hash_array[hash];
+
     while(temp != NULL){
         if(strcmp(temp->string,buffer->tokens[0]) == 0){
             is_found = SUCCESS;
+            ptr->do_command[temp->slot](buffer);
 	    break;
 	}
 	temp = temp->next;
-    }
-
-    if(is_found == SUCCESS){
-
-        if(hash == ptr->hashed_values[0]){         // exit - command
-            fflush(stdout);
-	    free(buffer->buffer);
-	    free_nodes(ptr);
-	    exit(SUCCESS);
-        }
-
-        if(hash == ptr->hashed_values[1]){         // cd - command
-
-            if(buffer->no_of_arguments == 2){
-	        if(buffer->tokens[1][0] == '~'){
-		    char *home = getenv("HOME");
-                    snprintf(path,sizeof(path),"%s%s",home,buffer->tokens[1] + 1);
-	            if(chdir(path) == -1){
-		        perror("cd");
-		    }
-		} else {
-                    if(chdir(buffer->tokens[1]) == -1){
-		       perror("cd");
-		    }
-		}
-
-	    } else if(buffer->no_of_arguments == 1){
-                char *home = getenv("HOME");
-		if(chdir(home) == -1){
-                    perror("cd");
-		}
-	    } else{
-                fprintf(stderr,"cd : invalid number of arguments\n");
-	    }
-        }
-
     }
     return is_found;
 }
