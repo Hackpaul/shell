@@ -1,9 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "shared.h"
 
-void get_line(struct line *ptr){
+#include "shared.h"
+#include "struct.h"
+#include "function.h"
+
+void get_line(input *ptr){
 
     char *line = NULL;
     size_t buffer_size = 0;
