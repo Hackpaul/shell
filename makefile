@@ -1,12 +1,12 @@
-CC =gcc
-FLAG = -Wextra -Wall
-TARGET=shell
-SHARED =shared.h
-OBJ=shell.o getline.o parser.o pid_handler.o buildins.o hash.o
+CC = gcc
+FLAG = -Wextra -Wall -Wpedantic
+TARGET = shell
+SHARED = shared.h struct.h function.h
+OBJ = shell.o getline.o parser.o pid_handler.o buildins.o hash.o function.o
 
-all: $(TARGET)
+all : $(TARGET)
 
-$(TARGET):$(OBJ)
+$(TARGET) : $(OBJ)
 	$(CC) $(OBJ) -o $(TARGET)
 
 shell.o : shell.c $(SHARED)
@@ -27,6 +27,8 @@ buildins.o : buildins.c $(SHARED)
 hash.o : hash.c $(SHARED)
 	$(CC) $(FLAG) -c hash.c
 
+function.o : function.c $(SHARED)
+	$(CC) $(FLAG) -c function.c
 clean :
 	rm -f $(OBJ) $(TARGET)
 
