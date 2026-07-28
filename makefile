@@ -1,5 +1,5 @@
 CC = gcc
-FLAG = -Wextra -Wall -Wpedantic
+FLAG = -g -Wextra -Wall -Wpedantic
 TARGET = shell
 SHARED = shared.h struct.h function.h
 OBJ = shell.o getline.o parser.o pid_handler.o buildins.o hash.o function.o
