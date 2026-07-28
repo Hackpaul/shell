@@ -13,7 +13,7 @@ void get_line(input *ptr){
     ssize_t n_size;
     
     n_size=getline(&line,&buffer_size,stdin);
-        if(n_size != -1){		
+    if(n_size != -1){		
         line[strcspn(line,"\n")] = '\0'; 		
         ptr->buffer = line;
 	ptr->code = 1;
@@ -24,8 +24,9 @@ void get_line(input *ptr){
 	ptr->buffer_size = 0;
     } else if(ferror(stdin)){  //Check for system error
         ptr->code = -1;
-	ptr->buffer = line;
-	ptr->buffer_size = 0;
+	ptr->buffer = '\0';
+	ptr->buffer_size = 1;
+	clearerr(stdin);
     }
 
 }
