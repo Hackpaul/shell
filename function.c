@@ -2,10 +2,35 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <signal.h>
 
 #include "struct.h"
 #include "shared.h"
 #include "function.h"
+
+
+void sigint_handler(int sig){                        // SIGINT handler	
+    (void)sig;
+    write(STDOUT_FILENO, "\n", 1);
+}
+
+void initialize_signals(void){
+    struct sigaction sigint , sigtstp , sigquit;      // Signal : SIGINT     
+
+    sigint.sa_handler = sigint_handler;
+    sigemptyset(&sigint.sa_mask);
+    sigint.sa_flags = 0;
+    sigaction(SIGINT,&sigint,NULL);
+    
+    sigemptyset(&sigtstp.sa_mask);                    // Signal : SIGTSTP
+    sigtstp.sa_handler = SIG_IGN;
+    sigaction(SIGTSTP,&sigtstp,NULL);
+
+    sigemptyset(&sigquit.sa_mask);                    // Signal : SIGQUIT
+    sigquit.sa_handler = SIG_IGN;
+    sigaction(SIGQUIT,&sigquit,NULL);
+    
+}
 
 void do_exit(input *buffer){
     if(buffer->no_of_arguments == 1) {

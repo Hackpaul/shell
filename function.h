@@ -4,6 +4,9 @@
 #include "shared.h"
 #include "struct.h"
 
+void sigint_handler(int sig);
+void initialize_signals(void);
+
 
 // Buildin command 
 void do_exit(input *buffer);
