@@ -13,6 +13,8 @@ void sigint_handler(int sig){                        //Fucntion : SIGINT
     write(STDOUT_FILENO, "\n", 1);
 }
 
+
+
 int main(void){
 
     int count , stop = 1;
@@ -25,17 +27,17 @@ int main(void){
     sigint.sa_flags = 0;
     sigaction(SIGINT,&sigint,NULL);
     
-    sigemptyset(&sigtstp.sa_mask); 
+    sigemptyset(&sigtstp.sa_mask);                    // Signal : SIGTSTP
     sigtstp.sa_handler = SIG_IGN;
     sigaction(SIGTSTP,&sigtstp,NULL);
 
-    sigemptyset(&sigquit.sa_mask); 
+    sigemptyset(&sigquit.sa_mask);                    // Signal : SIGQUIT
     sigquit.sa_handler = SIG_IGN;
     sigaction(SIGQUIT,&sigquit,NULL);
 
-    input shared_buffer;          // Declare a shared structure for buffer
+    input shared_buffer;                              // Declare a shared structure for buffer
 
-    hash_table hash = {0};        // Initialize hash tables struct 
+    hash_table hash = {0};                            // Initialize hash tables struct 
     shared_buffer.table = &hash;  
     char path[PATH_SIZE] = {0};
 	
@@ -47,16 +49,16 @@ int main(void){
         setenv("PWD",path,1);
         printf("%s@pc$%s ",getenv("USER"),getenv("PWD"));
         fflush(stdout);
-        get_line(&shared_buffer);    // Pass the struct and get update
+        get_line(&shared_buffer);                    // Pass the struct and get update
 
         if(shared_buffer.code == 1){
         count = parser(&shared_buffer);
 	    if(count > 0){	    
                 if(buildin_handler(&shared_buffer,&hash) == FAIL){
 	            process_id = fork();
-                    if(process_id == 0){            // child block
+                    if(process_id == 0){             // child block
                         execute_command(&shared_buffer);
-                    } else if(process_id > 0){      // parent block
+                    } else if(process_id > 0){       // parent block
                         parent(process_id);
          	    } else{
                         fprintf(stderr,"Error : fork cancelled");
