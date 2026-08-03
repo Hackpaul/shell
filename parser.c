@@ -24,8 +24,8 @@ int parser(input *buffer){
    A custom parser is under progress !
    Why this choice : 
 
-   	1. To get a full control over whats the user is typing .
-	2. This can be easily extended over each new symbols and quotes . 
+   	1. To get a full control over whats the user is typing.
+	2. This can be easily extended over each new feats. 
 *//* 
 
 int parser(input *buffer){
