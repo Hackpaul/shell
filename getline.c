@@ -16,18 +16,17 @@ void get_line(input *ptr){
     if(n_size != -1){		
         line[strcspn(line,"\n")] = '\0'; 		
         ptr->buffer = line;
-	ptr->code = 1;
-	ptr->buffer_size = n_size;
+        ptr->code = 1;
+        ptr->buffer_size = n_size;
     } else if(feof(stdin)){    //Check for EOF
         ptr->buffer = line;
-	ptr->code = 0;
-	ptr->buffer_size = 0;
+        ptr->code = 0;
+        ptr->buffer_size = 0;
     } else if(ferror(stdin)){  //Check for system error
         ptr->code = -1;
-	ptr->buffer = '\0';
-	ptr->buffer_size = 1;
-	clearerr(stdin);
+        ptr->buffer = '\0';
+        ptr->buffer_size = 1;
+        clearerr(stdin);
     }
-
 }
 

@@ -8,28 +8,25 @@
 
 int parser(input *buffer){
 
-	char *temp = strtok(buffer->buffer," ");
-	int count = 0;
+    char *temp = strtok(buffer->buffer," ");
+    int count = 0;
         while(temp != NULL && count < MAX_TOKENS){
-		buffer->tokens[count] = temp;
-		count ++;
-		temp = strtok(NULL," ");
-	}
-	buffer->no_of_arguments = count;
-	buffer->tokens[count] = NULL;
+            buffer->tokens[count] = temp;
+            count ++;
+            temp = strtok(NULL," ");
+        }
+        buffer->no_of_arguments = count;
+        buffer->tokens[count] = NULL;
         return count;
 }
 
 /*
    A custom parser is under progress !
- 
-   why this choice : 
+   Why this choice : 
 
-   	1. I want a full control over whats the user is typing .
-	2. this can be easily extended over each new symbols and quotes . 
-*/
-
-/* 
+   	1. To get a full control over whats the user is typing .
+	2. This can be easily extended over each new symbols and quotes . 
+*//* 
 
 int parser(input *buffer){
     int count = 0, i = 0;

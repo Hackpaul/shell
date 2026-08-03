@@ -14,15 +14,13 @@ void free_nodes(hash_table *ptr){
         front = ptr->hash_array[i];
         while(front != NULL){
             back = front ;
-	    front = front->next;
-	    free(back);
-	}
+            front = front->next;
+            free(back);
+        }
     }
-
 }
 
-void initialize_buildins(hash_table *ptr){
-                                 // to add a new function , add it before NULL. 
+void initialize_buildins(hash_table *ptr){     // to add a new function , add it before NULL. 
     ptr->buildins[0] = "exit";
     ptr->do_command[0] = do_exit;
     ptr->buildins[1] = "cd";
@@ -41,9 +39,9 @@ int buildin_handler(input* buffer , hash_table *ptr){
         if(strcmp(temp->string,buffer->tokens[0]) == 0){
             is_found = SUCCESS;
             ptr->do_command[temp->slot](buffer);
-	    break;
-	}
-	temp = temp->next;
+            break;
+        }
+        temp = temp->next;
     }
     return is_found;
 }

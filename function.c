@@ -25,23 +25,22 @@ void do_cd(input *buffer){
         if(buffer->tokens[1][0] == '~'){
            char *home = getenv("HOME");
             snprintf(path,sizeof(path),"%s%s",home,buffer->tokens[1] + 1);
-	    if(chdir(path) == -1){
-	        perror("cd");
-	    }
+            if(chdir(path) == -1){
+                perror("cd");
+            }
 
-	} else {
+        } else {
             if(chdir(buffer->tokens[1]) == -1){
-	    perror("cd");
-	    }
-	}
+                perror("cd");
+            }
+        }
 
     } else if(buffer->no_of_arguments == 1){
         char *home = getenv("HOME");
-	if(chdir(home) == -1){
+        if(chdir(home) == -1){
             perror("cd");
-	}
+        }
     } else{
         fprintf(stderr,"cd : invalid number of arguments\n");
     }
-
 }
