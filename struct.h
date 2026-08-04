@@ -3,15 +3,15 @@
 
 #include "shared.h"
 
-
-typedef struct line{             //Shared structure for string buffers
-	int code;
-	int no_of_arguments;
-	char *buffer;
-	size_t buffer_size;
-        char *tokens[MAX_TOKENS];
-	struct hash_table *table;
+typedef struct line{                  //Shared structure for string buffers
+    int code;
+    int no_of_arguments;
+    char *buffer;
+    size_t buffer_size;
+    char *tokens[MAX_TOKENS];
+    struct hash_table *table;
 }input;
+
 
 typedef struct node {
     char *string;

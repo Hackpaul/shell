@@ -1,6 +1,6 @@
-#include<stdio.h>
-#include<string.h>
-#include<stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 
 #include "shared.h"
 #include "struct.h"
@@ -29,13 +29,25 @@ int parser(input *buffer){
 *//* 
 
 int parser(input *buffer){
-    int count = 0, i = 0;
+    int count = 0, pos = 0 ,struct = 0 , is_error = FAIL;
     char *temp = buffer->buffer;
-    while(temp[i] != '\n'){
-        case temp[i]
+    while(temp[pos] != '\0'){
+        while(temp[pos] != ' '){
+            if(temp[pos] == '|'){
+                struct ++;
+		if(temp[pos + 1] == '|'){
+                    fprintf(stderr,"shell: syntax error near unexpected token `|' \n");
+		    return 1;
+                }
+            }
+            count ++;
+	}
+        pos ++;	
+	if(is_error == SUCCESS){
+            break;
+        }
     }
-    return count;
+    return 0;
 }
-
 */
 
