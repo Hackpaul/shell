@@ -1,18 +1,14 @@
-#ifndef GETLINE
-#define GETLINE
+#ifndef SHARED_H
+#define SHARED_H
 
-struct line{             //Shared structure for string buffers
+#define FAIL 0
+#define SUCCESS 1 
+#define MAX_BUILDINS_COMMANDS 10
+#define MAX_TOKENS 10
+#define HASH_TABLE 10
+#define PATH_SIZE 4096
 
-	int code;
-	char *buffer;
-	size_t buffer_size;
-        char *tokens[10];
-};
-
-void get_line(struct line *ptr);
-int parser(struct line *ptr);
-void execute_command(struct line *ptr);
-void parent(pid_t pid);
+typedef unsigned long unit;
 
 #endif 
 

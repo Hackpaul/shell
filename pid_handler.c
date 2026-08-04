@@ -5,14 +5,15 @@
 #include <sys/types.h>
 
 #include "shared.h"
+#include "struct.h"
 
-void execute_command(struct line *buffer){
-	execvp(buffer->tokens[0],buffer->tokens);
-	printf("shell :%s :is not recognised as a command\n",buffer->tokens[0]);
-	exit(EXIT_FAILURE);
+void execute_command(input *buffer){
+    execvp(buffer->tokens[0],buffer->tokens);
+    printf("shell :%s :is not recognised as a command\n",buffer->tokens[0]);
+    exit(EXIT_FAILURE);    // Since the entire memory map is deleted , no need for free of heap .
 }
 
 void parent(pid_t child_pid){
-	waitpid(child_pid,NULL,0);
+    waitpid(child_pid,NULL,0);
 }
 
