@@ -8,24 +8,10 @@ typedef struct line{                  //Shared structure for string buffers
     int no_of_arguments;
     char *buffer;
     size_t buffer_size;
-    char structs[MAX_SRTUCTS];
+    char *tokens[MAX_TOKENS];
     struct hash_table *table;
 }input;
 
-/*
-
-typedef struct{
-    char *tokens[MAXT_TOKENS];
-    int no_of_arguments;
-    int is_file_in ;
-    int is_file_out;
-    int error;
-}buffer_node
- */
-
-// -------------
-//     Hash 
-// -------------
 
 typedef struct node {
     char *string;
