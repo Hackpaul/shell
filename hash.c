@@ -29,6 +29,7 @@ int hash_buildins(hash_table *ptr){
             }
             temp->string = ptr->buildins[count];
             temp->slot = count;
+	    temp->next = NULL;
             ptr->hash_array[hash] = temp;
         } else {
             while(temp->next != NULL){	                      // appendation of node 
