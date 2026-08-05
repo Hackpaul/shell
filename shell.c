@@ -53,5 +53,6 @@ int main(void){
         }
             free(shared_buffer.buffer);
         }
+    	free_nodes(&hash);
         return 0;
 }
