@@ -29,24 +29,31 @@ int parser(input *buffer){
 *//* 
 
 int parser(input *buffer){
-    int count = 0, pos = 0 ,struct = 0 , is_error = FAIL;
+    int token_count = 0, current = 0 ,struct = 0 , is_error = FAIL;
     char *temp = buffer->buffer;
-    while(temp[pos] != '\0'){
-        while(temp[pos] != ' '){
-            if(temp[pos] == '|'){
-                struct ++;
-		if(temp[pos + 1] == '|'){
+    char *temp_token = NULL , *tokens[10] = {NULL};
+    temp_token = temp;
+    while(temp[current] != '\0'){
+        switch(temp[current]){
+	    case ' ' :
+	    	temp[current] = '\0';
+		break;
+            case '|' :
+		if(temp[current + 1] == '|'){
                     fprintf(stderr,"shell: syntax error near unexpected token `|' \n");
-		    return 1;
+	            return 1;
                 }
-            }
-            count ++;
-	}
-        pos ++;	
+		break;
+	    default :
+	        break;
+        }
+        current++;
+
 	if(is_error == SUCCESS){
             break;
         }
     }
+
     return 0;
 }
 */
