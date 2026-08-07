@@ -5,8 +5,9 @@
 #include "shared.h"
 #include "struct.h"
 #include "function.h"
+#include "helper.h"
 
-int parser(input *buffer){
+int tokenizer(input *buffer){
 
     char *temp = strtok(buffer->buffer," ");
     int count = 0;
@@ -19,6 +20,77 @@ int parser(input *buffer){
         buffer->tokens[count] = NULL;
         return count;
 }
+
+
+Tree_node parser(input *buffer, int count){
+    int i = 0 , tokens_count = 0;
+    vhar *temp = NULL;
+
+    tree_node *current = calloc(sizeof(struct tree_node));
+    memset(current,0,sizeof(struct tree_node));
+
+    Tree_node *struct_ptr = current;
+    for(i = 0;i < count ;i ++){
+	temp = buffer->tokens[i];
+
+	if(strcmp(temp,"<") == 0){
+
+	    current->file = buffer->tokens[i+1]; 
+	    i ++;
+	    temp = NULL;
+	    current->is_file_in ++;
+	} 
+	/*else if(strcmp(temp,"<<") == 0){
+	    current->multi_line_in
+	    temp = NULL;
+	    curent->is_multi_line_in ++;
+
+	}*/
+	 else if(strcmp(temp,">") == 0){
+	    temp = NULL;
+	    current->file = buffer->tokens[i+1];
+	    i ++;
+	    current->is_file_out ++;
+
+	} else if(strcmp(temp,">>") == 0){ 
+
+	    temp = NULL;
+	    current->file = buffer->tokens[i+1];
+	    i ++;
+	    current->is_append_file ++;
+          
+	}else if(strcmp(temp,"|") == 0){
+
+            tokens_count = 0;
+	    ptr = create_node(PIPE);
+	    ptr->left = current;
+	    ptr->right = current;
+
+	}else if(strcmp(temp,"||") == 0){
+
+	    tokens_count = 0;
+	    temp_struct = create_node(NODE_OR);
+	    temp_struct->left = current;
+	    temp_struct->right = current; 
+
+	}else if(strcmp(temp,"&&") == 0){
+
+	    tokens_count = 0;
+	    temp_struct = create_node(NODE_AND);
+	    temp_struct->left = current;
+	    temp_struct->right = current; 
+
+	}else {
+
+	    current->tokens[tokens_count] = temp;
+	    tokens_count ++;
+
+	}
+	
+    }
+    return temp;
+}
+
 
 /*
    A custom parser is under progress !
@@ -33,11 +105,9 @@ int parser(input *buffer){
     char *temp = buffer->buffer;
     char *temp_token = NULL , *tokens[10] = {NULL};
     temp_token = temp;
+
     while(temp[current] != '\0'){
         switch(temp[current]){
-	    case ' ' :
-	    	temp[current] = '\0';
-		break;
             case '|' :
 		if(temp[current + 1] == '|'){
                     fprintf(stderr,"shell: syntax error near unexpected token `|' \n");
@@ -48,10 +118,6 @@ int parser(input *buffer){
 	        break;
         }
         current++;
-
-	if(is_error == SUCCESS){
-            break;
-        }
     }
 
     return 0;
