@@ -30,7 +30,7 @@ int main(void){
         get_line(&shared_buffer);                    // Pass the struct and get update
 
         if(shared_buffer.code == 1){
-        count = parser(&shared_buffer);
+        count = tokenizer(&shared_buffer);
 	    if(count > 0){	    
                 if(buildin_handler(&shared_buffer,&hash) == FAIL){
 	            process_id = fork();
