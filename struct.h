@@ -3,11 +3,30 @@
 
 #include "shared.h"
 
-typedef struct tree_nodes{
-   Nodetype type;
-   
-} tree_nodes;
+typedef struct tree_node{
+    Nodetype type;
+    union {
+        typedef struct{
+            char *tokens[MAX_TOKENS];
+	    char *file;
+	} cmd;
 
+	typedef struct{
+ 	    struct tree_node left;
+	    struct tree_node right;
+	} pipe;
+
+	typedef struct{
+ 	    struct tree_node left;
+	    struct tree_node right;
+	} or;
+
+	typedef struct{
+ 	    struct tree_node left;
+	    struct tree_node right;
+	} and;
+    }
+} tree_node;
 
 typedef struct line{                  //Shared structure for string buffers
     int code;
@@ -23,7 +42,6 @@ typedef struct node {
     int slot;
     struct node *next;
 }hash_node;
-
 
 typedef struct hash_table{
     char *buildins[MAX_BUILDINS_COMMANDS];
