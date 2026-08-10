@@ -23,8 +23,8 @@ int tokenizer(input *buffer){
 
 
 Tree_node parser(input *buffer, int count){
-    int i = 0 , tokens_count = 0;
-    vhar *temp = NULL;
+    int i = 0 , tokens_count = 0 , is_cmd = 1;
+    char *temp = NULL;
 
     tree_node *current = calloc(sizeof(struct tree_node));
     memset(current,0,sizeof(struct tree_node));
@@ -60,21 +60,21 @@ Tree_node parser(input *buffer, int count){
 	    current->is_append_file ++;
           
 	}else if(strcmp(temp,"|") == 0){
-
+	    is_cmd = 0;
             tokens_count = 0;
 	    ptr = create_node(PIPE);
 	    ptr->left = current;
 	    ptr->right = current;
 
 	}else if(strcmp(temp,"||") == 0){
-
+	    is_cmd = 0;
 	    tokens_count = 0;
 	    temp_struct = create_node(NODE_OR);
 	    temp_struct->left = current;
 	    temp_struct->right = current; 
 
 	}else if(strcmp(temp,"&&") == 0){
-
+	    is_cmd = 0;
 	    tokens_count = 0;
 	    temp_struct = create_node(NODE_AND);
 	    temp_struct->left = current;
@@ -82,6 +82,7 @@ Tree_node parser(input *buffer, int count){
 
 	}else {
 
+	    
 	    current->tokens[tokens_count] = temp;
 	    tokens_count ++;
 
