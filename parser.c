@@ -86,7 +86,7 @@ tree_node *parser(input *buffer, int count){
 	    is_cmd = 0;
 	    tokens_count = 0;
 	    struct_ptr = create_node(NODE_OR);
-	    struct_ptr->left = current;
+	    struct_ptr->left = head;
 	    stored_ptr = &struct_ptr->right;
 	    head = struct_ptr;
 
@@ -95,7 +95,7 @@ tree_node *parser(input *buffer, int count){
 	    is_cmd = 0;
 	    tokens_count = 0;
 	    struct_ptr = create_node(NODE_AND);
-	    struct_ptr->left = current;
+	    struct_ptr->left = head;
 	    stored_ptr = &struct_ptr->right;
 	    head  = struct_ptr;
 
@@ -107,6 +107,7 @@ tree_node *parser(input *buffer, int count){
 	}
 	
     }
+    if(current->tokens[token])
     return head;
 }
 
