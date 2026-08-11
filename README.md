@@ -1,3 +1,5 @@
+CURRENTLY UNDER DEVELOPMENT 
+
 # Custom C Unix Shell
 
 A lightweight, modular Unix command-line interpreter written in **C**. This project explores operating system fundamentals, low-level process creation, signal handling, and text parsing.
