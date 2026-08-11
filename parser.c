@@ -22,15 +22,27 @@ int tokenizer(input *buffer){
 }
 
 
-Tree_node parser(input *buffer, int count){
+tree_node *parser(input *buffer, int count){
+
     int i = 0 , tokens_count = 0 , is_cmd = 1;
     char *temp = NULL;
+    
+    if(count == 0){
+	return NULL;
+    }
 
-    tree_node *current = calloc(sizeof(struct tree_node));
+    tree_node *current = malloc(sizeof(struct tree_node));
     memset(current,0,sizeof(struct tree_node));
 
-    Tree_node *struct_ptr = current;
+    tree_node *struct_ptr = current , *head = current ;
     for(i = 0;i < count ;i ++){
+
+	if(is_cmd == 0){
+	    *stored_ptr = current;
+	    current = malloc(sizeof(struct tree_node));
+	    memset(tree_node,0,sizeof(tree_node));
+	    is_cmd = 1;
+	}
 	temp = buffer->tokens[i];
 
 	if(strcmp(temp,"<") == 0){
@@ -47,6 +59,7 @@ Tree_node parser(input *buffer, int count){
 
 	}*/
 	 else if(strcmp(temp,">") == 0){
+
 	    temp = NULL;
 	    current->file = buffer->tokens[i+1];
 	    i ++;
@@ -60,36 +73,41 @@ Tree_node parser(input *buffer, int count){
 	    current->is_append_file ++;
           
 	}else if(strcmp(temp,"|") == 0){
+
 	    is_cmd = 0;
             tokens_count = 0;
-	    ptr = create_node(PIPE);
-	    ptr->left = current;
-	    ptr->right = current;
+	    struct_ptr = create_node(PIPE);
+	    struct_ptr->left = head;
+	    stored_ptr = &struct_ptr->right;
+	    head = struct_ptr;
 
 	}else if(strcmp(temp,"||") == 0){
+
 	    is_cmd = 0;
 	    tokens_count = 0;
-	    temp_struct = create_node(NODE_OR);
-	    temp_struct->left = current;
-	    temp_struct->right = current; 
+	    struct_ptr = create_node(NODE_OR);
+	    struct_ptr->left = current;
+	    stored_ptr = &struct_ptr->right;
+	    head = struct_ptr;
 
 	}else if(strcmp(temp,"&&") == 0){
+
 	    is_cmd = 0;
 	    tokens_count = 0;
-	    temp_struct = create_node(NODE_AND);
-	    temp_struct->left = current;
-	    temp_struct->right = current; 
+	    struct_ptr = create_node(NODE_AND);
+	    struct_ptr->left = current;
+	    stored_ptr = &struct_ptr->right;
+	    head  = struct_ptr;
 
 	}else {
 
-	    
 	    current->tokens[tokens_count] = temp;
 	    tokens_count ++;
 
 	}
 	
     }
-    return temp;
+    return head;
 }
 
 
