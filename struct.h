@@ -8,23 +8,26 @@ typedef struct tree_node{
     union {
         typedef struct{
             char *tokens[MAX_TOKENS];
+	    int is_file_out;
+	    int is_file_in;
+	    int is_append_file;
 	    char *file;
-	} cmd;
+	} cmd_node;
 
 	typedef struct{
  	    struct tree_node left;
 	    struct tree_node right;
-	} pipe;
+	} pipe_node;
 
 	typedef struct{
  	    struct tree_node left;
 	    struct tree_node right;
-	} or;
+	} or_node;
 
 	typedef struct{
  	    struct tree_node left;
 	    struct tree_node right;
-	} and;
+	} and_node;
     }
 } tree_node;
 
