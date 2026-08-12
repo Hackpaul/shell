@@ -38,18 +38,17 @@ tree_node *parser(input *buffer, int count){
     for(i = 0;i < count ;i ++){
 
 	if(is_cmd == 0){
+	    current = create_node(NODE_CMD);
 	    *stored_ptr = current;
-	    current = malloc(sizeof(struct tree_node));
-	    memset(tree_node,0,sizeof(tree_node));
 	    is_cmd = 1;
 	}
 	temp = buffer->tokens[i];
 
 	if(strcmp(temp,"<") == 0){
 
-	    current->file = buffer->tokens[i+1]; 
+	    current->tokens[tokens_count] = NULL;
+	    current->file_in = buffer->tokens[i+1]; 
 	    i ++;
-	    temp = NULL;
 	    current->is_file_in ++;
 	} 
 	/*else if(strcmp(temp,"<<") == 0){
@@ -60,29 +59,31 @@ tree_node *parser(input *buffer, int count){
 	}*/
 	 else if(strcmp(temp,">") == 0){
 
-	    temp = NULL;
-	    current->file = buffer->tokens[i+1];
+	    current->tokens[tokens_count] = NULL;
+	    current->file_out = buffer->tokens[i+1];
 	    i ++;
 	    current->is_file_out ++;
 
 	} else if(strcmp(temp,">>") == 0){ 
 
-	    temp = NULL;
-	    current->file = buffer->tokens[i+1];
+	    current->tokens[tokens_count] = NULL;
+	    current->append_file = buffer->tokens[i+1];
 	    i ++;
 	    current->is_append_file ++;
           
 	}else if(strcmp(temp,"|") == 0){
 
+	    current->tokens[tokens_count] = NULL;
 	    is_cmd = 0;
             tokens_count = 0;
-	    struct_ptr = create_node(PIPE);
+	    struct_ptr = create_node(NODE_PIPE);
 	    struct_ptr->left = head;
 	    stored_ptr = &struct_ptr->right;
 	    head = struct_ptr;
 
 	}else if(strcmp(temp,"||") == 0){
 
+	    current->tokens[tokens_count] = NULL;
 	    is_cmd = 0;
 	    tokens_count = 0;
 	    struct_ptr = create_node(NODE_OR);
@@ -92,6 +93,7 @@ tree_node *parser(input *buffer, int count){
 
 	}else if(strcmp(temp,"&&") == 0){
 
+	    current->tokens[tokens_count] = NULL;
 	    is_cmd = 0;
 	    tokens_count = 0;
 	    struct_ptr = create_node(NODE_AND);
@@ -99,13 +101,10 @@ tree_node *parser(input *buffer, int count){
 	    stored_ptr = &struct_ptr->right;
 	    head  = struct_ptr;
 
-	}else {
-
-	    current->tokens[tokens_count] = temp;
-	    tokens_count ++;
-
-	}
-	
+	} else {
+        current->tokens[tokens_count] = temp;
+        tokens_count ++;	
+        }
     }
     if(current->tokens[token])
     return head;
