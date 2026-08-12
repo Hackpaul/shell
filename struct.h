@@ -9,25 +9,17 @@ typedef struct tree_node{
         typedef struct{
             char *tokens[MAX_TOKENS];
 	    int is_file_out;
+	    char *file_out;
 	    int is_file_in;
+	    char *file_in;
 	    int is_append_file;
-	    char *file;
+	    char *append_file;
 	} cmd_node;
 
 	typedef struct{
  	    struct tree_node left;
 	    struct tree_node right;
-	} pipe_node;
-
-	typedef struct{
- 	    struct tree_node left;
-	    struct tree_node right;
-	} or_node;
-
-	typedef struct{
- 	    struct tree_node left;
-	    struct tree_node right;
-	} and_node;
+	} operator_node;
     }
 } tree_node;
 
