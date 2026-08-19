@@ -10,6 +10,13 @@
 
 typedef unsigned long unit;
 
+typedef enum{
+   NODE_CMD,
+   NODE_PIPE,
+   NODE_OR,
+   NODE_AND
+} Node_type;
+
 #endif 
 
 
