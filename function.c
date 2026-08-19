@@ -7,7 +7,7 @@
 #include "struct.h"
 #include "shared.h"
 #include "function.h"
-
+#include "hash.h" 
 
 void sigint_handler(int sig){                        // SIGINT handler	
     (void)sig;
@@ -32,35 +32,35 @@ void initialize_signals(void){
     
 }
 
-void do_exit(input *buffer){
-    if(buffer->no_of_arguments == 1) {
+void do_exit(char **tokens,int count,pointer_struct *ptr){
+    if(count == 1) {
         fflush(stdout);
-        free(buffer->buffer);
-        free_nodes(buffer->table);
+        free(((input *)ptr->input_ptr)->buffer);
+        free_nodes((hash_table *)ptr->hash_table_ptr);
         exit(SUCCESS);
     } else {
         printf("Invalid no of arguments!\n");
     }	
 }
 
-void do_cd(input *buffer){
+void do_cd(char**tokens,int count, pointer_struct *ptr){
     char path[PATH_SIZE] = {0};
 
-    if(buffer->no_of_arguments == 2){
-        if(buffer->tokens[1][0] == '~'){
+    if(count == 2){
+        if(tokens[1][0] == '~'){
            char *home = getenv("HOME");
-            snprintf(path,sizeof(path),"%s%s",home,buffer->tokens[1] + 1);
+            snprintf(path,sizeof(path),"%s%s",home,tokens[1] + 1);
             if(chdir(path) == -1){
                 perror("cd");
             }
 
         } else {
-            if(chdir(buffer->tokens[1]) == -1){
+            if(chdir(tokens[1]) == -1){
                 perror("cd");
             }
         }
 
-    } else if(buffer->no_of_arguments == 1){
+    } else if(count == 1){
         char *home = getenv("HOME");
         if(chdir(home) == -1){
             perror("cd");

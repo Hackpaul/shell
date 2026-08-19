@@ -7,9 +7,11 @@
 #include "shared.h"
 #include "struct.h"
 
-void execute_command(input *buffer){
-    execvp(buffer->tokens[0],buffer->tokens);
-    printf("shell :%s :is not recognised as a command\n",buffer->tokens[0]);
+
+
+void execute_command(char **tokens){
+    execvp(tokens[0],tokens);
+    printf("shell :%s :is not recognised as a command\n",tokens[0]);
     exit(EXIT_FAILURE);    // Since the entire memory map is deleted , no need for free of heap .
 }
 
