@@ -4,9 +4,9 @@
 #include "shared.h"
 
 typedef struct tree_node{
-    Nodetype type;
+    Node_type type;
     union {
-        typedef struct{
+        struct{
             char *tokens[MAX_TOKENS];
 	    int is_file_out;
 	    char *file_out;
@@ -16,11 +16,11 @@ typedef struct tree_node{
 	    char *append_file;
 	} cmd_node;
 
-	typedef struct{
- 	    struct tree_node left;
-	    struct tree_node right;
+	struct{
+ 	    struct tree_node *left;
+	    struct tree_node *right;
 	} operator_node;
-    }
+    };
 } tree_node;
 
 typedef struct line{                  //Shared structure for string buffers
@@ -38,12 +38,18 @@ typedef struct node {
     struct node *next;
 }hash_node;
 
+typedef struct pointer_struct{
+    void *input_ptr;
+    void *hash_table_ptr;
+    void *ast_ptr;
+}pointer_struct;
+
+typedef void (*func)(char **tokens,int count,pointer_struct *ptr);   // Function pointer
+
 typedef struct hash_table{
     char *buildins[MAX_BUILDINS_COMMANDS];
     hash_node *hash_array[HASH_TABLE];
     func do_command[MAX_BUILDINS_COMMANDS];
 }hash_table;
-
-typedef void (*func)(struct line *);   // Function pointer
 
 #endif
