@@ -31,8 +31,7 @@ tree_node *parser(char **buffer, int count){
 	return NULL;
     }
 
-    tree_node *current = malloc(sizeof(struct tree_node));
-    memset(current,0,sizeof(struct tree_node));
+    tree_node *current = create_node(NODE_CMD);
 
     tree_node *struct_ptr = current , *head = current , **stored_ptr ;
     for(i = 0;i < count ;i ++){
@@ -45,8 +44,7 @@ tree_node *parser(char **buffer, int count){
 	temp = buffer[i];
 
 	if(strcmp(temp,"<") == 0){
-
-	    temp = NULL;
+           current->cmd_node.tokens[tokens_count] = temp;
 	   if(i+1 < count){
 	        current->cmd_node.file_in = buffer[i+1];
 	        i ++;
@@ -61,8 +59,7 @@ tree_node *parser(char **buffer, int count){
 
 	}*/
 	 else if(strcmp(temp,">") == 0){
-
-	    temp = NULL;
+             current->cmd_node.tokens[tokens_count] = temp;
 	     if(i+1 < count){
                 current->cmd_node.file_out = buffer[i+1];
 	        i ++;
@@ -72,7 +69,6 @@ tree_node *parser(char **buffer, int count){
 	    current->cmd_node.is_file_out ++;
 
 	} else if(strcmp(temp,">>") == 0){ 
-
 	    temp = NULL;
 	    if(i+1 < count){
 	        current->cmd_node.append_file = buffer[i+1];
@@ -84,37 +80,42 @@ tree_node *parser(char **buffer, int count){
           
 	}else if(strcmp(temp,"|") == 0){
 
-	    temp = NULL;
+            current->cmd_node.tokens[tokens_count] = NULL;
 	    is_cmd = 0;
             tokens_count = 0;
 	    struct_ptr = create_node(NODE_PIPE);
 	    struct_ptr->operator_node.left = head;
 	    stored_ptr = &struct_ptr->operator_node.right;
 	    head = struct_ptr;
+	    continue;
 
 	}else if(strcmp(temp,"||") == 0){
 
-	    temp = NULL;
+
+	    current->cmd_node.tokens[tokens_count] = NULL;
 	    is_cmd = 0;
 	    tokens_count = 0;
 	    struct_ptr = create_node(NODE_OR);
 	    struct_ptr->operator_node.left = head;
 	    stored_ptr = &struct_ptr->operator_node.right;
 	    head = struct_ptr;
+	    continue;
 
 	}else if(strcmp(temp,"&&") == 0){
 
-	    temp = NULL;
 	    is_cmd = 0;
+	    current->cmd_node.tokens[tokens_count] = NULL;
 	    tokens_count = 0;
 	    struct_ptr = create_node(NODE_AND);
 	    struct_ptr->operator_node.left = head;
 	    stored_ptr = &struct_ptr->operator_node.right;
 	    head  = struct_ptr;
+	    continue;
 
-	} 
-        current->cmd_node.tokens[tokens_count] = temp;
-        tokens_count ++;	
+	} else { 
+            current->cmd_node.tokens[tokens_count] = temp;
+	}
+        tokens_count ++;
     }
     return head;
 }
