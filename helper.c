@@ -42,3 +42,58 @@ void execute_cmds(char **tokens,int count, pointer_struct *ptr){
         }
     }
 }
+
+int execute_ast(tree_node *head){
+    if(head == NULL){
+        return 0;
+    }
+    switch(head->type){
+
+        case NODE_CMD:
+	     printf("cmd : %s",head->cmd_node.tokens[0]);
+	     break;
+	case NODE_PIPE:
+	     execute_ast(head->operator_node.left);
+	     printf("--duped--");
+	     execute_ast(head->operator_node.right);
+	     break;
+	case NODE_OR : 
+	     execute_ast(head->operator_node.left);
+	     printf("--OR--");
+	     execute_ast(head->operator_node.right); 
+	     break;
+	case NODE_AND:
+             execute_ast(head->operator_node.left);
+	     printf("--AND--");
+	     execute_ast(head->operator_node.right);
+	     break;
+    }
+    fflush(stdout);
+    return 1;
+
+} 
+
+int free_node(tree_node *head){
+
+    switch(head->type){
+
+        case NODE_CMD:
+
+	     free(head);
+	     printf("freed cmd");
+	     break;
+
+	case NODE_PIPE:
+	case NODE_OR : 
+	case NODE_AND:
+
+             free_node(head->operator_node.left);
+	     free_node(head->operator_node.right); 
+	     free(head);
+
+	     break;
+
+    }
+    return 1;
+
+}
