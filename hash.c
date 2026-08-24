@@ -45,3 +45,18 @@ int hash_buildins(hash_table *ptr){
     }
     return count;
 }
+
+void free_nodes(hash_table *ptr){
+    hash_node *back, *front;
+    int i;
+    for(i=0; i<HASH_TABLE; i++){
+        front = ptr->hash_array[i];
+        while(front != NULL){
+            back = front ;
+            front = front->next;
+            free(back);
+        }
+    }
+}
+
+
