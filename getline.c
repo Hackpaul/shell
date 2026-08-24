@@ -23,6 +23,7 @@ void get_line(input *ptr){
         ptr->code = 0;
         ptr->buffer_size = 0;
     } else if(ferror(stdin)){  //Check for system error
+	free(line);
         ptr->code = -1;
         ptr->buffer = '\0';
         ptr->buffer_size = 1;
