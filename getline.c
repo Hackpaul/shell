@@ -24,6 +24,7 @@ void get_line(input *ptr){
         ptr->buffer_size = 0;
     } else if(ferror(stdin)){  //Check for system error
         ptr->code = -1;
+	free(line);
         ptr->buffer = '\0';
         ptr->buffer_size = 1;
         clearerr(stdin);
