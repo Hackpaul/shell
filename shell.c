@@ -32,16 +32,18 @@ int main(void){
     while(stop){
         getcwd(path,sizeof(path));
         setenv("PWD",path,1);
-        printf("%s@pc$%s ",getenv("USER"),getenv("PWD"));
+     // temproy :   printf("%s@pc$%s ",getenv("USER"),getenv("PWD"));
         fflush(stdout);
         get_line(&shared_buffer);                    // Pass the struct and get update
 
         if(shared_buffer.code == 1){
             count = tokenizer(&shared_buffer);
 	    tree_ptr = parser(shared_buffer.tokens,count);
-           
+            execute_ast(tree_ptr);
+    	    free_node(tree_ptr);
+	    printf("\n");
 	    if(count > 0){	    
-		execute_cmds(shared_buffer.tokens, shared_buffer.no_of_arguments,&ptr_pointer_struct);
+	// tempory 	execute_cmds(shared_buffer.tokens, shared_buffer.no_of_arguments,&ptr_pointer_struct);
 	    }
         } else if(shared_buffer.code == 0){
             printf("\n");
