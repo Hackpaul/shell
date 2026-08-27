@@ -14,6 +14,7 @@ typedef struct tree_node{
 	    char *file_in;
 	    int is_append_file;
 	    char *append_file;
+	    int count;
 	} cmd_node;
 
 	struct{
