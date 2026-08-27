@@ -13,7 +13,6 @@
 int main(void){
 
     int count , stop = 1;
-    pid_t process_id;
  
     input shared_buffer;                              // Declare a shared structure for buffer
     initialize_signals();
@@ -32,18 +31,16 @@ int main(void){
     while(stop){
         getcwd(path,sizeof(path));
         setenv("PWD",path,1);
-     // temproy :   printf("%s@pc$%s ",getenv("USER"),getenv("PWD"));
+        printf("%s@pc$%s ",getenv("USER"),getenv("PWD"));
         fflush(stdout);
         get_line(&shared_buffer);                    // Pass the struct and get update
 
         if(shared_buffer.code == 1){
             count = tokenizer(&shared_buffer);
-	    tree_ptr = parser(shared_buffer.tokens,count);
-            execute_ast(tree_ptr);
-    	    free_node(tree_ptr);
-	    printf("\n");
 	    if(count > 0){	    
-	// tempory 	execute_cmds(shared_buffer.tokens, shared_buffer.no_of_arguments,&ptr_pointer_struct);
+	    tree_ptr = parser(shared_buffer.tokens,count);
+            execute_ast(tree_ptr,&ptr_pointer_struct);
+    	    free_node(tree_ptr);
 	    }
         } else if(shared_buffer.code == 0){
             printf("\n");
