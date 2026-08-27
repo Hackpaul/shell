@@ -24,7 +24,7 @@ int tokenizer(input *buffer){
 
 tree_node *parser(char **buffer, int count){
 
-    int i = 0 , tokens_count = 0 , is_cmd = 1;
+    int i = 0 , tokens_count = 0 , is_cmd = 1 , is_operator = 0 ,can_append = 1;
     char *temp = NULL;
     
     if(count == 0){
@@ -36,6 +36,8 @@ tree_node *parser(char **buffer, int count){
     tree_node *struct_ptr = current , *head = current , **stored_ptr ;
     for(i = 0;i < count ;i ++){
 
+	can_append = 1;
+
 	if(is_cmd == 0){
 	    current = create_node(NODE_CMD);
 	    *stored_ptr = current;
@@ -44,10 +46,10 @@ tree_node *parser(char **buffer, int count){
 	temp = buffer[i];
 
 	if(strcmp(temp,"<") == 0){
-           current->cmd_node.tokens[tokens_count] = temp;
-	   if(i+1 < count){
+	    if(i+1 < count){
 	        current->cmd_node.file_in = buffer[i+1];
 	        i ++;
+		can_append = 0;
 	    } else {
 	        current->cmd_node.file_in = NULL;
 	    }
@@ -59,63 +61,77 @@ tree_node *parser(char **buffer, int count){
 
 	}*/
 	 else if(strcmp(temp,">") == 0){
-             current->cmd_node.tokens[tokens_count] = temp;
 	     if(i+1 < count){
                 current->cmd_node.file_out = buffer[i+1];
 	        i ++;
+		can_append = 0;
 	    } else {
 		current->cmd_node.file_out = NULL;
 	    }
 	    current->cmd_node.is_file_out ++;
 
 	} else if(strcmp(temp,">>") == 0){ 
-	    temp = NULL;
 	    if(i+1 < count){
 	        current->cmd_node.append_file = buffer[i+1];
 	        i ++;
+		can_append = 0;
 	    } else {
 		current->cmd_node.append_file = NULL;
 	    }
 	    current->cmd_node.is_append_file ++;
           
-	}else if(strcmp(temp,"|") == 0){
+	} else if(strcmp(temp,"|") == 0){
 
             current->cmd_node.tokens[tokens_count] = NULL;
 	    is_cmd = 0;
-            tokens_count = 0;
+            is_operator = 1;
+	    can_append = 0;
 	    struct_ptr = create_node(NODE_PIPE);
 	    struct_ptr->operator_node.left = head;
 	    stored_ptr = &struct_ptr->operator_node.right;
 	    head = struct_ptr;
-	    continue;
 
-	}else if(strcmp(temp,"||") == 0){
-
+	} else if(strcmp(temp,"||") == 0){
 
 	    current->cmd_node.tokens[tokens_count] = NULL;
 	    is_cmd = 0;
-	    tokens_count = 0;
+	    is_operator = 1;
+	    can_append = 0;
 	    struct_ptr = create_node(NODE_OR);
 	    struct_ptr->operator_node.left = head;
 	    stored_ptr = &struct_ptr->operator_node.right;
 	    head = struct_ptr;
-	    continue;
 
-	}else if(strcmp(temp,"&&") == 0){
+	} else if(strcmp(temp,"&&") == 0){
 
 	    is_cmd = 0;
 	    current->cmd_node.tokens[tokens_count] = NULL;
-	    tokens_count = 0;
+            is_operator = 1;
+	    can_append = 0;
 	    struct_ptr = create_node(NODE_AND);
 	    struct_ptr->operator_node.left = head;
 	    stored_ptr = &struct_ptr->operator_node.right;
 	    head  = struct_ptr;
-	    continue;
 
 	} else { 
             current->cmd_node.tokens[tokens_count] = temp;
+	    can_append = 1;
 	}
-        tokens_count ++;
+
+	if(tokens_count +1 < MAX_TOKENS){
+	    current->cmd_node.tokens[tokens_count + 1] = NULL;
+	}
+
+        if(is_operator){
+	    tokens_count = 0;
+	    is_operator = 0;
+	}
+
+        if(can_append){
+	    tokens_count ++;
+	    current->cmd_node.count = tokens_count; 
+	}
+
     }
     return head;
 }
