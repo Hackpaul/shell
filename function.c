@@ -33,6 +33,9 @@ void initialize_signals(void){
 }
 
 void do_exit(char **tokens,int count,pointer_struct *ptr){
+
+    (void)tokens;
+
     if(count == 1) {
         fflush(stdout);
         free(((input *)ptr->input_ptr)->buffer);
@@ -45,6 +48,8 @@ void do_exit(char **tokens,int count,pointer_struct *ptr){
 
 void do_cd(char**tokens,int count, pointer_struct *ptr){
     char path[PATH_SIZE] = {0};
+
+    (void)ptr;
 
     if(count == 2){
         if(tokens[1][0] == '~'){
