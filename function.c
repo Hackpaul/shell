@@ -106,13 +106,13 @@ int check_is_redirection(tree_node *ptr){
 int do_exit(char **tokens,int count){
     
     (void) tokens;
-    if(count == 1) {
+    if(count <= 2) {
         fflush(stdout);
-        return 0;
+        return -1;
     } else {
         printf("Invalid no of arguments!\n");
     }	
-    return -1;
+    return SUCCESS;
 }
 
 int do_cd(char**tokens,int count){
