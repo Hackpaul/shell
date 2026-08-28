@@ -19,14 +19,11 @@ int main(void){
     hash_table hash = {0};                            // Initialize hash tables struct 
     shared_buffer.table = &hash;  
     char path[PATH_SIZE] = {0};
-    pointer_struct ptr_pointer_struct;
 
     tree_node *tree_ptr;
 	
     initialize_buildins(&hash);
     shared_buffer.buffer = NULL;
-    ptr_pointer_struct.input_ptr = &shared_buffer;
-    ptr_pointer_struct.hash_table_ptr = &hash;
 
     while(stop){
         getcwd(path,sizeof(path));
@@ -39,7 +36,7 @@ int main(void){
             count = tokenizer(&shared_buffer);
 	    if(count > 0){	    
 	    tree_ptr = parser(shared_buffer.tokens,count);
-            execute_ast(tree_ptr,&ptr_pointer_struct);
+            stop = execute_ast(tree_ptr,&hash);
     	    free_node(tree_ptr);
 	    }
         } else if(shared_buffer.code == 0){
