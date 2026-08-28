@@ -6,7 +6,6 @@
 
 struct tree_node *create_node(Node_type type);
 
-void execute_cmds(char **tokens,int count, pointer_struct *ptr);
 int execute_ast(tree_node *head,pointer_struct *ptr);
 int free_node(tree_node *head);
 
