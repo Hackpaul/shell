@@ -3,6 +3,8 @@
 #include <string.h>
 #include <unistd.h>
 #include <signal.h>
+#include <sys/types.h>
+#include <fcntl.h>
 
 #include "struct.h"
 #include "shared.h"
@@ -32,24 +34,89 @@ void initialize_signals(void){
     
 }
 
-void do_exit(char **tokens,int count,pointer_struct *ptr){
+int check_is_redirection(tree_node *ptr){
+        int fd;
+	char *file;
 
-    (void)tokens;
+	if(ptr->cmd_node.is_file_out > 0){
 
+	     file = ptr->cmd_node.file_out;
+
+	    if(file != NULL){
+
+		fd = open(file,O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP);
+		if(fd > 0){
+		    dup2(fd,STDOUT_FILENO);
+		    close(fd);
+		} else {
+		    perror("FILE OUT ");
+		    return 0;
+		}
+
+	    } else {
+		fprintf(stderr,"Error : No file specified");
+		exit(EXIT_FAILURE);
+	    }
+
+	}
+
+        if(ptr->cmd_node.is_file_in > 0){
+
+	    file = ptr->cmd_node.file_in;
+	    if(file != NULL){
+
+		fd = open(file,O_RDONLY);
+		if(fd > 0){
+		    dup2(fd,STDIN_FILENO);
+		    close(fd);
+		} else {
+		    perror("FILE IN ");
+		    return 0;
+		}
+
+	    } else {
+		fprintf(stderr,"Error : No file specified");
+		exit(EXIT_FAILURE);
+	    }
+	}
+
+        if(ptr->cmd_node.is_append_file > 0){
+
+	     file = ptr->cmd_node.append_file;
+	     if(file != NULL){
+
+		fd = open(file,O_WRONLY | O_CREAT | O_APPEND , S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP);
+		if(fd > 0){
+		    dup2(fd,STDOUT_FILENO);
+		    close(fd);
+		} else {
+		    perror("FILE APPEND ");
+		    return 0;
+		}
+
+	    } else {
+		fprintf(stderr,"Error : No file specified");
+		exit(EXIT_FAILURE);
+	    }
+	}
+	return 1;
+
+}
+
+int do_exit(char **tokens,int count){
+    
+    (void) tokens;
     if(count == 1) {
         fflush(stdout);
-        free(((input *)ptr->input_ptr)->buffer);
-        free_nodes((hash_table *)ptr->hash_table_ptr);
-        exit(SUCCESS);
+        return 0;
     } else {
         printf("Invalid no of arguments!\n");
     }	
+    return -1;
 }
 
-void do_cd(char**tokens,int count, pointer_struct *ptr){
+int do_cd(char**tokens,int count){
     char path[PATH_SIZE] = {0};
-
-    (void)ptr;
 
     if(count == 2){
         if(tokens[1][0] == '~'){
@@ -73,4 +140,5 @@ void do_cd(char**tokens,int count, pointer_struct *ptr){
     } else{
         fprintf(stderr,"cd : invalid number of arguments\n");
     }
+    return SUCCESS;
 }
