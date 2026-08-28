@@ -3,15 +3,19 @@
 #include <string.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <sys/wait.h>
 
 #include "shared.h"
 #include "struct.h"
 #include "function.h"
 
 struct tree_node *create_node(Node_type type){
+
     struct tree_node *ptr = malloc(sizeof(struct tree_node));
     memset(ptr,0,sizeof(struct tree_node));
+
     switch (type) {
+
         case NODE_CMD:
 	     ptr->type = NODE_CMD;
 	     break;
@@ -24,46 +28,65 @@ struct tree_node *create_node(Node_type type){
 	case NODE_AND:
 	     ptr->type = NODE_AND;
 	     break;
+
     }
+    
     return ptr;
 }
  
-void execute_cmds(char **tokens,int count,pointer_struct *ptr){
-    if(buildin_handler(tokens, count,ptr) == FAIL){
-        pid_t process_id = fork();
-        if(process_id == 0){             // child block
-            execute_command(tokens);
-        } else if(process_id > 0){       // parent block
-            parent(process_id);
-        } else{
-            fprintf(stderr,"Error : fork cancelled");
-            free(tokens);
-            exit(EXIT_FAILURE);
-        }
-    }
-}
-
-int execute_ast(tree_node *head,pointer_struct *ptr){
+int execute_ast(tree_node *head,hash_table *ptr){
+    pid_t process_id;
+    int is_buildin;
     if(head == NULL){
         return 0;
     }
     switch(head->type){
 
         case NODE_CMD:
-	     execute_cmds(head->cmd_node.tokens,head->cmd_node.count,ptr);
+              is_buildin = buildin_handler(head->cmd_node.tokens, head->cmd_node.count,ptr);
+
+	     if(is_buildin == -1){
+	         return 0;
+	     }
+	     if(is_buildin == FAIL){
+                 process_id = fork();
+		
+                 if(process_id == 0){             // child block
+
+                     if(check_is_redirection(head) == 0){
+		          exit(EXIT_FAILURE);
+		     }
+	             execvp(head->cmd_node.tokens[0],head->cmd_node.tokens);
+	             printf("shell :%s :is not recognised as a command\n",head->cmd_node.tokens[0]);
+                     exit(EXIT_FAILURE); 
+                 } else if(process_id > 0){       // parent block
+                     waitpid(process_id,NULL,0);
+                 } else{
+                     fprintf(stderr,"Error : fork cancelled");
+                     return 0;
+                 }
+
+             }	
 	     break;
+
 	case NODE_PIPE:
+
 	     execute_ast(head->operator_node.left,ptr);
 	     execute_ast(head->operator_node.right,ptr);
 	     break;
+
 	case NODE_OR :
+
 	     execute_ast(head->operator_node.left,ptr);
 	     execute_ast(head->operator_node.right,ptr); 
 	     break;
+
 	case NODE_AND:
+
              execute_ast(head->operator_node.left,ptr);
 	     execute_ast(head->operator_node.right,ptr);
 	     break;
+	     
     }
     fflush(stdout);
     return 1;
