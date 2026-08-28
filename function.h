@@ -15,7 +15,6 @@ void do_cd(char **tokens,int count,pointer_struct *ptr);
 // Global functions
 void get_line(input *ptr);
 
-void parent(pid_t pid);
 void initialize_buildins(hash_table *ptr);
 int buildin_handler(char **tokens, int count,pointer_struct *ptr);
 void execute_command(char **tokens);
