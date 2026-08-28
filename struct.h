@@ -5,6 +5,7 @@
 
 typedef struct tree_node{
     Node_type type;
+
     union {
         struct{
             char *tokens[MAX_TOKENS];
@@ -39,13 +40,7 @@ typedef struct node {
     struct node *next;
 }hash_node;
 
-typedef struct pointer_struct{
-    void *input_ptr;
-    void *hash_table_ptr;
-    void *ast_ptr;
-}pointer_struct;
-
-typedef void (*func)(char **tokens,int count,pointer_struct *ptr);   // Function pointer
+typedef int (*func)(char **tokens,int count);   // Function pointer
 
 typedef struct hash_table{
     char *buildins[MAX_BUILDINS_COMMANDS];
