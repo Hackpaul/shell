@@ -14,7 +14,8 @@ typedef enum{
    NODE_CMD,
    NODE_PIPE,
    NODE_OR,
-   NODE_AND
+   NODE_AND,
+   NODE_UNKNOWN
 } Node_type;
 
 #endif 
