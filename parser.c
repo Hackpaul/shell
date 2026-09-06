@@ -24,14 +24,14 @@ int tokenizer(input *buffer){
 
 tree_node *parser(char **buffer, int count){
 
-    int i = 0 , tokens_count = 0 , is_cmd = 1 , is_operator = 0 ,can_append = 1;
+    int i = 0 , tokens_count = 0 , is_cmd = 1 , is_operator = 0 ,can_append = 1 ,state_unknown = 1;
     char *temp = NULL;
     
     if(count == 0){
 	return NULL;
     }
 
-    tree_node *current = create_node(NODE_CMD);
+    tree_node *current = create_node(NODE_UNKNOWN);
 
     tree_node *struct_ptr = current , *head = current , **stored_ptr ;
     for(i = 0;i < count ;i ++){
@@ -39,13 +39,19 @@ tree_node *parser(char **buffer, int count){
 	can_append = 1;
 
 	if(is_cmd == 0){
-	    current = create_node(NODE_CMD);
+	    current = create_node(NODE_UNKNOWN);
 	    *stored_ptr = current;
+	    state_unknown = 1;
 	    is_cmd = 1;
 	}
 	temp = buffer[i];
 
 	if(strcmp(temp,"<") == 0){
+	   
+	    if(state_unknown){
+	        current->type = NODE_CMD;
+	    }
+
 	    if(i+1 < count){
 	        current->cmd_node.file_in = buffer[i+1];
 	        i ++;
@@ -53,14 +59,13 @@ tree_node *parser(char **buffer, int count){
 	    } else {
 	        current->cmd_node.file_in = NULL;
 	    }
-	} 
-	/*else if(strcmp(temp,"<<") == 0){
-	    current->multi_line_in
-	    temp = NULL;
-	    curent->is_multi_line_in ++;
 
-	}*/
-	 else if(strcmp(temp,">") == 0){
+	} else if(strcmp(temp,">") == 0){
+
+	     if(state_unknown){
+		 current->type = NODE_CMD;
+	     }
+
 	     if(i+1 < count){
                 current->cmd_node.file_out = buffer[i+1];
 	        i ++;
@@ -71,6 +76,11 @@ tree_node *parser(char **buffer, int count){
 	    current->cmd_node.is_file_out ++;
 
 	} else if(strcmp(temp,">>") == 0){ 
+
+	    if(state_unknown){
+		 current->type = NODE_CMD;
+	    }
+
 	    if(i+1 < count){
 	        current->cmd_node.append_file = buffer[i+1];
 	        i ++;
@@ -81,8 +91,12 @@ tree_node *parser(char **buffer, int count){
 	    current->cmd_node.is_append_file ++;
           
 	} else if(strcmp(temp,"|") == 0){
-
-            current->cmd_node.tokens[tokens_count] = NULL;
+	
+	    if(state_unknown){
+	
+	    } else {
+                current->cmd_node.tokens[tokens_count] = NULL;
+	    }
 	    is_cmd = 0;
             is_operator = 1;
 	    can_append = 0;
@@ -93,9 +107,14 @@ tree_node *parser(char **buffer, int count){
 
 	} else if(strcmp(temp,"||") == 0){
 
-	    current->cmd_node.tokens[tokens_count] = NULL;
+	    if(state_unknown){
+
+	    } else {
+	        current->cmd_node.tokens[tokens_count] = NULL;
+	    }
 	    is_cmd = 0;
 	    is_operator = 1;
+
 	    can_append = 0;
 	    struct_ptr = create_node(NODE_OR);
 	    struct_ptr->operator_node.left = head;
@@ -104,8 +123,12 @@ tree_node *parser(char **buffer, int count){
 
 	} else if(strcmp(temp,"&&") == 0){
 
+	    if(state_unknown){
+
+	     } else {
+	        current->cmd_node.tokens[tokens_count] = NULL;
+	     }
 	    is_cmd = 0;
-	    current->cmd_node.tokens[tokens_count] = NULL;
             is_operator = 1;
 	    can_append = 0;
 	    struct_ptr = create_node(NODE_AND);
@@ -113,11 +136,19 @@ tree_node *parser(char **buffer, int count){
 	    stored_ptr = &struct_ptr->operator_node.right;
 	    head  = struct_ptr;
 
-	} else { 
+	} else {
+
+	    if(state_unknown){
+		current->type = NODE_CMD;
+	    }
+	    
             current->cmd_node.tokens[tokens_count] = temp;
 	    can_append = 1;
 	}
 
+	if(state_unknown){
+	    state_unknown = 0;
+	}
 	if(tokens_count +1 < MAX_TOKENS){
 	    current->cmd_node.tokens[tokens_count + 1] = NULL;
 	}
