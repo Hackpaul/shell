@@ -85,7 +85,7 @@ make
 
 Build with **AddressSanitizer (ASan)** enabled for memory debugging:
 ```bash
-make CFLAGS="-Wall -Wextra -g -fsanitize=address -fsanitize=undefined"
+make CFLAGS="-Wall -Wextra -g -fsanitize=address"
 ```
 
 ### Running the Shell
