@@ -59,6 +59,7 @@ tree_node *parser(char **buffer, int count){
 	    } else {
 	        current->cmd_node.file_in = NULL;
 	    }
+	    current->cmd_node.file_in ++;
 
 	} else if(strcmp(temp,">") == 0){
 
