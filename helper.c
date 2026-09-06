@@ -132,17 +132,17 @@ int execute_ast(tree_node *head,hash_table *ptr , int write_fd){
 
 	case NODE_OR :
 
-	     if (execute_ast(head->operator_node.left,ptr,0) == 0){
-		return 0;
+	     if (execute_ast(head->operator_node.left,ptr,0) == 1){
+	     } else {
+	         execute_ast(head->operator_node.right,ptr,0); 
 	     }
-	     execute_ast(head->operator_node.right,ptr,0); 
 	     break;
 
 	case NODE_AND:
 
              if (execute_ast(head->operator_node.left,ptr,0) == 1) {
-	     }
 	     execute_ast(head->operator_node.right,ptr,0);
+	     }
 	     break;
 
 	case NODE_UNKNOWN:
