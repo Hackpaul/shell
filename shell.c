@@ -36,7 +36,7 @@ int main(void){
             count = tokenizer(&shared_buffer);
 	    if(count > 0){	    
 	    tree_ptr = parser(shared_buffer.tokens,count);
-            stop = execute_ast(tree_ptr,&hash);
+            stop = execute_ast(tree_ptr,&hash,0);
     	    free_node(tree_ptr);
 	    }
         } else if(shared_buffer.code == 0){
